@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>French Quarter Walkable World</title>
+  <link rel="stylesheet" href="styles/world.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.164.1/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main id="app" aria-label="French Quarter walkable 3D world">
+    <canvas id="world-canvas"></canvas>
+
+    <section id="boot-panel" class="win95-panel boot-panel">
+      <div class="titlebar"><span>FrenchQuarter.exe</span><span>□ ×</span></div>
+      <div class="panel-body">
+        <p class="eyebrow">MEWTWO WORLD BUILDER // GITHUB-PAGES READY</p>
+        <h1>French Quarter Night Walk</h1>
+        <p>
+          A modular Three.js walking world using textured floors, sky, facades,
+          balconies, gas lamps, courtyards, and retro New Orleans atmosphere.
+        </p>
+        <button id="enter-world" type="button" class="win95-button">ENTER WORLD</button>
+      </div>
+    </section>
+
+    <section id="hud" class="hud">
+      <div>
+        <strong id="world-title">French Quarter Night Walk</strong>
+        <span id="world-subtitle">Wrought iron, wet stones, neon, and pixel moonlight</span>
+      </div>
+      <div id="hint">WASD move • Mouse look • E inspect • Shift sprint • Esc release</div>
+    </section>
+
+    <section id="dialogue" class="win95-panel dialogue hidden" aria-live="polite">
+      <div class="titlebar"><span id="dialogue-speaker">SYSTEM</span><span>×</span></div>
+      <div class="panel-body">
+        <p id="dialogue-text"></p>
+        <button id="dialogue-close" type="button" class="win95-button">CLOSE</button>
+      </div>
+    </section>
+
+    <section id="metrics" class="metrics hidden"></section>
+
+    <div id="toolbar" class="toolbar">
+      <button id="fullscreen" class="win95-button" type="button">Fullscreen</button>
+      <button id="quality" class="win95-button" type="button">Quality: High</button>
+      <button id="metrics-toggle" class="win95-button" type="button">Metrics</button>
+    </div>
+
+    <div id="touch-controls" class="touch-controls" aria-hidden="true">
+      <div id="touch-stick" class="touch-stick"><span></span></div>
+      <button id="touch-action" class="touch-action" type="button">ACTION</button>
+    </div>
+  </main>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
