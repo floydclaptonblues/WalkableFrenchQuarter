@@ -5,616 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>French Quarter Walkable World</title>
   <style>
-    :root {
-      --panel: rgba(16, 12, 28, 0.84);
-      --panel-strong: rgba(9, 7, 18, 0.94);
-      --text: #fff3d6;
-      --muted: #c7b58d;
-      --accent: #ffcb6b;
-      --line: rgba(255, 226, 154, 0.34);
-    }
-
-    * { box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
-    body {
-      font-family: "Trebuchet MS", Verdana, system-ui, sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at 50% 10%, #241f4e 0%, #080711 62%, #020206 100%);
-      touch-action: none;
-      user-select: none;
-    }
-
-    #app, #world-canvas { width: 100%; height: 100%; display: block; }
-    #world-canvas { position: fixed; inset: 0; outline: none; }
-
-    .panel {
-      position: fixed;
-      z-index: 10;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45), inset 0 0 22px rgba(255, 216, 139, 0.08);
-      backdrop-filter: blur(10px);
-    }
-
-    .boot-panel {
-      left: 50%; top: 50%; transform: translate(-50%, -50%);
-      width: min(560px, calc(100vw - 28px));
-      padding: 22px;
-      border-radius: 18px;
-      text-align: center;
-    }
-
-    .boot-panel h1 { margin: 10px 0 8px; font-size: clamp(2rem, 7vw, 4.5rem); line-height: .92; }
-    .boot-panel p { margin: 0 auto 18px; max-width: 45ch; color: var(--muted); font-size: 1rem; line-height: 1.45; }
-    .eyebrow { letter-spacing: .18em; text-transform: uppercase; font-size: .72rem !important; color: var(--accent) !important; }
-
-    button {
-      color: #1a1208;
-      background: linear-gradient(#ffe6a3, #d69535);
-      border: 1px solid #fff0b6;
-      border-bottom-color: #75501c;
-      border-right-color: #75501c;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-weight: 800;
-      letter-spacing: .05em;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0,0,0,.25);
-    }
-    button:active { transform: translateY(1px); }
-
-    .hud {
-      position: fixed;
-      left: 14px; right: 14px; top: 14px;
-      z-index: 7;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      pointer-events: none;
-      text-shadow: 0 2px 10px #000;
-    }
-    .hud strong { display: block; font-size: 1.05rem; }
-    .hud span, #hint { display: block; color: var(--muted); font-size: .86rem; margin-top: 2px; }
-    #hint { text-align: right; max-width: 48ch; }
-
-    .toolbar {
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      z-index: 9;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .dialogue {
-      left: 50%; bottom: 22px; transform: translateX(-50%);
-      width: min(620px, calc(100vw - 28px));
-      padding: 14px 16px;
-      border-radius: 14px;
-    }
-    .dialogue-title { color: var(--accent); font-weight: 900; margin-bottom: 4px; }
-    .dialogue p { margin: 0; line-height: 1.35; color: var(--text); }
-    .hidden { display: none !important; }
-
-    .touch-controls {
-      position: fixed;
-      inset: auto 0 0 0;
-      z-index: 8;
-      pointer-events: none;
-      display: none;
-    }
-    .stick {
-      position: absolute;
-      left: 22px; bottom: 28px;
-      width: 108px; height: 108px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.25);
-      background: rgba(255,255,255,.08);
-      pointer-events: auto;
-    }
-    .stick span {
-      position: absolute; left: 38px; top: 38px;
-      width: 32px; height: 32px;
-      border-radius: 999px;
-      background: rgba(255, 219, 137, .72);
-    }
-    .touch-action { position: absolute; right: 22px; bottom: 44px; pointer-events: auto; }
-    .look-pad { position: absolute; right: 0; bottom: 0; width: 58vw; height: 62vh; pointer-events: auto; }
-
-    .loading-warning {
-      position: fixed;
-      left: 50%; top: 18px; transform: translateX(-50%);
-      z-index: 20;
-      display: none;
-      width: min(760px, calc(100vw - 28px));
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: rgba(45, 18, 18, .92);
-      border: 1px solid rgba(255, 160, 120, .5);
-      color: #ffe0d0;
-      font-size: .92rem;
-      line-height: 1.35;
-    }
-
-    @media (max-width: 760px) {
-      .hud { flex-direction: column; }
-      #hint { text-align: left; }
-      .toolbar { left: 14px; right: 14px; bottom: 148px; justify-content: center; }
-      .touch-controls { display: block; }
-      .boot-panel { padding: 18px; }
-    }
+    :root{--text:#fff3d6;--muted:#c7b58d;--accent:#ffcb6b;--line:rgba(255,226,154,.34);--panel:rgba(16,12,28,.84)}
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{font-family:"Trebuchet MS",Verdana,system-ui,sans-serif;color:var(--text);background:#070711;touch-action:none;user-select:none}#app,#world-canvas{width:100%;height:100%;display:block}#world-canvas{position:fixed;inset:0;outline:none}.panel{position:fixed;z-index:10;border:1px solid var(--line);background:var(--panel);box-shadow:0 18px 60px rgba(0,0,0,.45),inset 0 0 22px rgba(255,216,139,.08);backdrop-filter:blur(10px)}.boot-panel{left:50%;top:50%;transform:translate(-50%,-50%);width:min(580px,calc(100vw - 28px));padding:22px;border-radius:18px;text-align:center}.boot-panel h1{margin:10px 0 8px;font-size:clamp(2rem,7vw,4.5rem);line-height:.92}.boot-panel p{margin:0 auto 18px;max-width:47ch;color:var(--muted);font-size:1rem;line-height:1.45}.eyebrow{letter-spacing:.18em;text-transform:uppercase;font-size:.72rem!important;color:var(--accent)!important}button{color:#1a1208;background:linear-gradient(#ffe6a3,#d69535);border:1px solid #fff0b6;border-bottom-color:#75501c;border-right-color:#75501c;border-radius:10px;padding:10px 14px;font-weight:800;letter-spacing:.05em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25)}button:active{transform:translateY(1px)}.hud{position:fixed;left:14px;right:14px;top:14px;z-index:7;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;pointer-events:none;text-shadow:0 2px 10px #000}.hud strong{display:block;font-size:1.05rem}.hud span,#hint{display:block;color:var(--muted);font-size:.86rem;margin-top:2px}#hint{text-align:right;max-width:48ch}.toolbar{position:fixed;right:14px;bottom:14px;z-index:9;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.dialogue{left:50%;bottom:22px;transform:translateX(-50%);width:min(620px,calc(100vw - 28px));padding:14px 16px;border-radius:14px}.dialogue-title{color:var(--accent);font-weight:900;margin-bottom:4px}.dialogue p{margin:0;line-height:1.35}.hidden{display:none!important}.loading-warning{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:20;display:none;width:min(760px,calc(100vw - 28px));padding:12px 14px;border-radius:12px;background:rgba(45,18,18,.92);border:1px solid rgba(255,160,120,.5);color:#ffe0d0;font-size:.92rem;line-height:1.35}.touch-controls{position:fixed;inset:auto 0 0 0;z-index:8;pointer-events:none;display:none}.stick{position:absolute;left:22px;bottom:28px;width:108px;height:108px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);pointer-events:auto}.stick span{position:absolute;left:38px;top:38px;width:32px;height:32px;border-radius:999px;background:rgba(255,219,137,.72)}.look-pad{position:absolute;right:0;bottom:0;width:58vw;height:62vh;pointer-events:auto}.touch-action{position:absolute;right:22px;bottom:44px;pointer-events:auto}@media(max-width:760px){.hud{flex-direction:column}#hint{text-align:left}.toolbar{left:14px;right:14px;bottom:148px;justify-content:center}.touch-controls{display:block}.boot-panel{padding:18px}}
   </style>
 </head>
 <body>
   <main id="app" aria-label="French Quarter walkable 3D world">
     <canvas id="world-canvas"></canvas>
-
     <section id="boot-panel" class="panel boot-panel">
-      <p class="eyebrow">MEWTWO WORLD BUILDER // SELF-CONTAINED EDITION</p>
+      <p class="eyebrow">MEWTWO WORLD BUILDER // TEXTURED PAGES EDITION</p>
       <h1>French Quarter Night Walk</h1>
-      <p>Double-click this file and walk the moonlit Quarter: wet stones, narrow European-style lanes, balconies, lamps, courtyards, and little hidden inspection points.</p>
+      <p>GitHub Pages-safe build with procedural stone, brick, plaster, wood, water, iron, and glowing window textures generated inside this one file.</p>
       <button id="enter-world" type="button">ENTER WORLD</button>
     </section>
-
-    <section class="hud">
-      <div>
-        <strong>French Quarter Night Walk</strong>
-        <span>Wrought iron, wet stones, gas lamps, balconies, and pixel moonlight</span>
-      </div>
-      <div id="hint">WASD move • Mouse look • E inspect • Shift sprint • Esc release</div>
-    </section>
-
-    <section id="dialogue" class="panel dialogue hidden" aria-live="polite">
-      <div class="dialogue-title" id="dialogue-title">SYSTEM</div>
-      <p id="dialogue-text"></p>
-    </section>
-
-    <div id="toolbar" class="toolbar">
-      <button id="fullscreen" type="button">Fullscreen</button>
-      <button id="quality" type="button">Quality: High</button>
-      <button id="reset" type="button">Reset</button>
-    </div>
-
-    <div id="touch-controls" class="touch-controls" aria-hidden="true">
-      <div id="touch-stick" class="stick"><span></span></div>
-      <div id="look-pad" class="look-pad"></div>
-      <button id="touch-action" class="touch-action" type="button">ACTION</button>
-    </div>
-
-    <div id="loading-warning" class="loading-warning">
-      The 3D engine did not load. This version is self-contained except for Three.js, which loads from a CDN. Check internet access, or use RUN-WINDOWS.bat to open it through a local server.
-    </div>
+    <section class="hud"><div><strong>French Quarter Night Walk</strong><span>Wrought iron, wet stones, gas lamps, balconies, and pixel moonlight</span></div><div id="hint">WASD move • Mouse look • E inspect • Shift sprint • Esc release</div></section>
+    <section id="dialogue" class="panel dialogue hidden" aria-live="polite"><div class="dialogue-title" id="dialogue-title">SYSTEM</div><p id="dialogue-text"></p></section>
+    <div class="toolbar"><button id="fullscreen" type="button">Fullscreen</button><button id="quality" type="button">Quality: High</button><button id="reset" type="button">Reset</button></div>
+    <div id="touch-controls" class="touch-controls" aria-hidden="true"><div id="touch-stick" class="stick"><span></span></div><div id="look-pad" class="look-pad"></div><button id="touch-action" class="touch-action" type="button">ACTION</button></div>
+    <div id="loading-warning" class="loading-warning">The 3D engine did not load. This build has internal procedural textures, but Three.js still loads from a CDN. Check internet access or try again after GitHub Pages refreshes.</div>
   </main>
-
-  <script>
-    window.addEventListener('error', () => {
-      const warning = document.getElementById('loading-warning');
-      if (warning) warning.style.display = 'block';
-    });
-  </script>
-
+  <script>window.addEventListener('error',()=>{document.getElementById('loading-warning').style.display='block'})</script>
   <script type="module">
     import * as THREE from 'https://unpkg.com/three@0.164.1/build/three.module.js';
 
-    const canvas = document.getElementById('world-canvas');
-    const bootPanel = document.getElementById('boot-panel');
-    const enterButton = document.getElementById('enter-world');
-    const fullscreenButton = document.getElementById('fullscreen');
-    const qualityButton = document.getElementById('quality');
-    const resetButton = document.getElementById('reset');
-    const dialogue = document.getElementById('dialogue');
-    const dialogueTitle = document.getElementById('dialogue-title');
-    const dialogueText = document.getElementById('dialogue-text');
-    const touchStick = document.getElementById('touch-stick');
-    const stickKnob = touchStick.querySelector('span');
-    const lookPad = document.getElementById('look-pad');
-    const touchAction = document.getElementById('touch-action');
+    const canvas=document.getElementById('world-canvas');
+    const bootPanel=document.getElementById('boot-panel');
+    const dialogue=document.getElementById('dialogue');
+    const dialogueTitle=document.getElementById('dialogue-title');
+    const dialogueText=document.getElementById('dialogue-text');
+    const touchStick=document.getElementById('touch-stick');
+    const stickKnob=touchStick.querySelector('span');
+    const lookPad=document.getElementById('look-pad');
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x070711);
-    scene.fog = new THREE.FogExp2(0x090818, 0.018);
+    const scene=new THREE.Scene();
+    scene.background=new THREE.Color(0x070711);
+    scene.fog=new THREE.FogExp2(0x090818,.018);
+    const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,240);
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+    renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 
-    const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 240);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.8));
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    function texture(size,draw,rx=1,ry=1){const c=document.createElement('canvas');c.width=c.height=size;const ctx=c.getContext('2d');draw(ctx,size);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rx,ry);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t}
+    function noise(ctx,s,alpha=.08){for(let i=0;i<1800;i++){ctx.fillStyle=`rgba(255,255,255,${Math.random()*alpha})`;ctx.fillRect(Math.random()*s,Math.random()*s,1+Math.random()*3,1+Math.random()*3);ctx.fillStyle=`rgba(0,0,0,${Math.random()*alpha})`;ctx.fillRect(Math.random()*s,Math.random()*s,1+Math.random()*4,1+Math.random()*4)}}
+    function texStone(){return texture(512,(g,s)=>{g.fillStyle='#302d39';g.fillRect(0,0,s,s);noise(g,s,.11);g.strokeStyle='rgba(210,196,158,.28)';g.lineWidth=2;for(let y=0;y<s;y+=64){g.beginPath();for(let x=0;x<=s;x+=32)g.lineTo(x,y+Math.sin(x*.07+y)*5);g.stroke()}for(let x=0;x<s;x+=64){g.beginPath();for(let y=0;y<=s;y+=32)g.lineTo(x+Math.sin(y*.06+x)*5,y);g.stroke()}},10,10)}
+    function texBrick(){return texture(512,(g,s)=>{g.fillStyle='#552820';g.fillRect(0,0,s,s);for(let y=0;y<s;y+=52){for(let x=(y/52%2)*48;x<s;x+=96){g.fillStyle=`rgb(${85+Math.random()*45},${38+Math.random()*24},${28+Math.random()*18})`;g.fillRect(x+2,y+2,92,48)}}g.strokeStyle='rgba(20,12,10,.65)';g.lineWidth=4;for(let y=0;y<s;y+=52){g.beginPath();g.moveTo(0,y);g.lineTo(s,y);g.stroke()}noise(g,s,.08)},3,3)}
+    function texPlaster(base){return texture(512,(g,s)=>{g.fillStyle=base;g.fillRect(0,0,s,s);for(let i=0;i<80;i++){g.fillStyle=`rgba(255,238,195,${Math.random()*.08})`;g.beginPath();g.ellipse(Math.random()*s,Math.random()*s,20+Math.random()*90,8+Math.random()*40,Math.random()*Math.PI,0,Math.PI*2);g.fill()}noise(g,s,.12)},2,2)}
+    function texWood(){return texture(512,(g,s)=>{g.fillStyle='#452c19';g.fillRect(0,0,s,s);for(let y=0;y<s;y+=20){g.strokeStyle=`rgba(${95+Math.random()*60},${58+Math.random()*28},${26+Math.random()*15},.55)`;g.lineWidth=3;g.beginPath();for(let x=0;x<=s;x+=16)g.lineTo(x,y+Math.sin(x*.045+y*.04)*7);g.stroke()}noise(g,s,.06)},3,2)}
+    function texIron(){return texture(256,(g,s)=>{g.fillStyle='#17151a';g.fillRect(0,0,s,s);g.strokeStyle='rgba(190,180,150,.17)';for(let i=0;i<70;i++){g.beginPath();g.moveTo(Math.random()*s,0);g.lineTo(Math.random()*s,s);g.stroke()}noise(g,s,.12)},2,2)}
+    function texWater(){return texture(512,(g,s)=>{const grad=g.createLinearGradient(0,0,s,s);grad.addColorStop(0,'#254b65');grad.addColorStop(1,'#10243a');g.fillStyle=grad;g.fillRect(0,0,s,s);for(let y=0;y<s;y+=18){g.strokeStyle='rgba(185,230,255,.18)';g.lineWidth=2;g.beginPath();for(let x=0;x<=s;x+=18)g.lineTo(x,y+Math.sin(x*.04+y*.08)*7);g.stroke()}},3,3)}
+    function texGlow(){return texture(256,(g,s)=>{const grad=g.createRadialGradient(s/2,s/2,5,s/2,s/2,s/2);grad.addColorStop(0,'#fff4b8');grad.addColorStop(.42,'#ffc45c');grad.addColorStop(1,'#3b1d0a');g.fillStyle=grad;g.fillRect(0,0,s,s)},1,1)}
 
-    const player = {
-      position: new THREE.Vector3(0, 1.7, 25),
-      yaw: Math.PI,
-      pitch: 0,
-      speed: 6.5,
-      radius: 0.75
-    };
+    const maps={stone:texStone(),brick:texBrick(),plaster1:texPlaster('#bd7d55'),plaster2:texPlaster('#8f5d40'),plaster3:texPlaster('#cfb983'),wood:texWood(),iron:texIron(),water:texWater(),glow:texGlow()};
+    const mat={street:new THREE.MeshStandardMaterial({map:maps.stone,roughness:.98}),stone:new THREE.MeshStandardMaterial({map:maps.stone,roughness:.92}),brick:new THREE.MeshStandardMaterial({map:maps.brick,roughness:.88}),plaster1:new THREE.MeshStandardMaterial({map:maps.plaster1,roughness:.84}),plaster2:new THREE.MeshStandardMaterial({map:maps.plaster2,roughness:.86}),plaster3:new THREE.MeshStandardMaterial({map:maps.plaster3,roughness:.82}),wood:new THREE.MeshStandardMaterial({map:maps.wood,roughness:.7}),iron:new THREE.MeshStandardMaterial({map:maps.iron,roughness:.48,metalness:.65}),lamp:new THREE.MeshStandardMaterial({map:maps.glow,emissive:0xff9f2d,emissiveIntensity:1.7}),water:new THREE.MeshStandardMaterial({map:maps.water,roughness:.2,metalness:.1,transparent:true,opacity:.76})};
 
-    const keys = new Set();
-    const colliders = [];
-    const interactables = [];
-    const clock = new THREE.Clock();
-    const moveVector = new THREE.Vector3();
-    const tempVector = new THREE.Vector3();
-    let highQuality = true;
-    let touchMove = { x: 0, y: 0 };
-    let lastLook = null;
+    const player={position:new THREE.Vector3(0,1.7,25),yaw:Math.PI,pitch:0,speed:6.5,radius:.75};
+    const keys=new Set(),colliders=[],interactables=[],clock=new THREE.Clock(),move=new THREE.Vector3();
+    let highQuality=true,touchMove={x:0,y:0},lastLook=null;
 
-    const materials = {
-      stone: new THREE.MeshStandardMaterial({ color: 0x564f60, roughness: 0.92, metalness: 0.02 }),
-      street: new THREE.MeshStandardMaterial({ color: 0x262432, roughness: 0.98 }),
-      plaster1: new THREE.MeshStandardMaterial({ color: 0xc98f64, roughness: 0.8 }),
-      plaster2: new THREE.MeshStandardMaterial({ color: 0x9f6b47, roughness: 0.85 }),
-      plaster3: new THREE.MeshStandardMaterial({ color: 0xd7bf8d, roughness: 0.82 }),
-      brick: new THREE.MeshStandardMaterial({ color: 0x6f332d, roughness: 0.88 }),
-      iron: new THREE.MeshStandardMaterial({ color: 0x17151a, roughness: 0.48, metalness: 0.65 }),
-      wood: new THREE.MeshStandardMaterial({ color: 0x49311f, roughness: 0.7 }),
-      lamp: new THREE.MeshStandardMaterial({ color: 0xffcc78, emissive: 0xff9f2d, emissiveIntensity: 1.6 }),
-      water: new THREE.MeshStandardMaterial({ color: 0x314b65, roughness: 0.2, metalness: 0.1, transparent: true, opacity: 0.76 })
-    };
+    function box(w,h,d,m){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);mesh.castShadow=mesh.receiveShadow=true;return mesh}
+    function addCollider(x,z,w,d){colliders.push({minX:x-w/2,maxX:x+w/2,minZ:z-d/2,maxZ:z+d/2})}
+    function addLights(){scene.add(new THREE.HemisphereLight(0xaab8ff,0x120a06,1.05));const moon=new THREE.DirectionalLight(0xbfc9ff,1.8);moon.position.set(-22,48,20);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);moon.shadow.camera.near=1;moon.shadow.camera.far=110;moon.shadow.camera.left=-65;moon.shadow.camera.right=65;moon.shadow.camera.top=65;moon.shadow.camera.bottom=-65;scene.add(moon)}
+    function addGround(){const ground=new THREE.Mesh(new THREE.PlaneGeometry(130,130),mat.street);ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);for(let i=-60;i<=60;i+=10){const a=box(126,.025,.08,mat.stone);a.position.set(0,.025,i);scene.add(a);const b=box(.08,.025,126,mat.stone);b.position.set(i,.026,0);scene.add(b)}}
+    function addBuilding(x,z,w,d,h,m,name){const g=new THREE.Group();const body=box(w,h,d,m);body.position.y=h/2;g.add(body);const roof=box(w+.5,.35,d+.5,mat.wood);roof.position.y=h+.18;g.add(roof);const levels=Math.max(1,Math.floor(h/3)-1);for(let level=0;level<levels;level++){const y=2.8+level*2.6;const floor=box(Math.max(2,w*.72),.12,.75,mat.iron);floor.position.set(0,y,d/2+.42);g.add(floor);const rail=box(Math.max(2,w*.72),.58,.08,mat.iron);rail.position.set(0,y+.36,d/2+.78);g.add(rail);for(let wx=-w*.32;wx<=w*.32;wx+=Math.max(2.2,w*.22)){const win=box(.72,1.15,.06,mat.lamp);win.position.set(wx,y+.42,d/2+.035);g.add(win)}}g.position.set(x,0,z);scene.add(g);addCollider(x,z,w+.9,d+.9);interactables.push({x,z,title:name,text:`${name}: textured plaster, brick, wood, and iron now generated directly inside the Pages build.`})}
+    function addLamp(x,z){const g=new THREE.Group();const pole=box(.12,2.7,.12,mat.iron);pole.position.y=1.35;g.add(pole);const bulb=new THREE.Mesh(new THREE.SphereGeometry(.28,16,12),mat.lamp);bulb.position.y=2.82;g.add(bulb);const light=new THREE.PointLight(0xffbc6d,1.9,16,1.8);light.position.y=2.85;g.add(light);g.position.set(x,0,z);scene.add(g);interactables.push({x,z,title:'Gas Lamp',text:'The lamp throws amber light onto the textured wet stones.'})}
+    function addFountain(){const base=new THREE.Mesh(new THREE.CylinderGeometry(3.3,3.8,.55,48),mat.stone);base.position.set(0,.28,0);base.castShadow=base.receiveShadow=true;scene.add(base);const water=new THREE.Mesh(new THREE.CylinderGeometry(2.75,2.75,.08,48),mat.water);water.position.set(0,.62,0);scene.add(water);const col=new THREE.Mesh(new THREE.CylinderGeometry(.45,.6,2.3,24),mat.stone);col.position.set(0,1.72,0);col.castShadow=true;scene.add(col);const top=new THREE.Mesh(new THREE.SphereGeometry(.55,24,16),mat.lamp);top.position.set(0,3.05,0);scene.add(top);const light=new THREE.PointLight(0x9fd8ff,1.25,12,2);light.position.set(0,2.4,0);scene.add(light);addCollider(0,0,7.5,7.5);interactables.push({x:0,z:0,title:'Moon Fountain',text:'A textured stone fountain with procedural water ripples. Good central landmark.'})}
+    function addArch(x,z,r=0){const g=new THREE.Group();const l=box(.8,4.2,.9,mat.brick),rr=box(.8,4.2,.9,mat.brick),t=box(5.2,.9,.9,mat.brick);l.position.set(-2.2,2.1,0);rr.position.set(2.2,2.1,0);t.position.set(0,4,0);g.add(l,rr,t);g.rotation.y=r;g.position.set(x,0,z);scene.add(g);interactables.push({x,z,title:'Brick Archway',text:'A narrow textured pass-through: compressed, crooked, and walkable.'})}
+    function addSign(x,z,text){const c=document.createElement('canvas');c.width=512;c.height=160;const g=c.getContext('2d');g.fillStyle='#211515';g.fillRect(0,0,512,160);g.strokeStyle='#f5bd62';g.lineWidth=10;g.strokeRect(10,10,492,140);g.fillStyle='#ffe0a0';g.font='bold 48px Trebuchet MS';g.textAlign='center';g.textBaseline='middle';g.fillText(text,256,80);const sign=new THREE.Mesh(new THREE.PlaneGeometry(4.4,1.35),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c)}));sign.position.set(x,3.3,z);sign.rotation.y=Math.PI;scene.add(sign);interactables.push({x,z,title:text,text:`${text}: another storefront hiding in the Quarter maze.`})}
+    function buildWorld(){addLights();addGround();[[-22,-28,12,10,8,mat.plaster1,'Rue Violet House'],[-7,-30,10,9,7,mat.plaster3,'Old Pensione'],[12,-30,13,9,9,mat.brick,'Canal Brick Row'],[30,-22,10,13,8,mat.plaster2,'Amber Corner'],[31,-4,9,14,7,mat.plaster3,'Iron Lace Apartments'],[31,16,10,16,9,mat.plaster1,'Courtyard Hotel'],[14,32,14,10,8,mat.brick,'Old Market Wall'],[-5,32,11,10,7,mat.plaster2,'Blue Shutter House'],[-25,26,13,12,8,mat.plaster3,'Saint Alley Rooms'],[-32,5,9,15,7,mat.plaster1,'Quiet Arcade'],[-31,-14,10,14,8,mat.brick,'Red Brick Court'],[8,12,7,9,6,mat.plaster2,'Tiny Cafe Block'],[-11,11,8,7,6,mat.plaster1,'Pocket Courtyard Rooms']].forEach(a=>addBuilding(...a));addFountain();addArch(-18,2,Math.PI/2);addArch(20,-12,0);addArch(2,22,0);[-26,-12,0,16,30].forEach(z=>addLamp(-12,z));[-24,-6,10,27].forEach(z=>addLamp(15,z));[-18,8,24].forEach(x=>addLamp(x,-18));[-20,-4,12,26].forEach(x=>addLamp(x,18));addSign(-7,-25.42,'CAFE DU PIXEL');addSign(14,-25.42,'MOON BAR');addSign(-5,26.5,'RUG SHOP');const moon=new THREE.Mesh(new THREE.SphereGeometry(4.4,32,16),new THREE.MeshBasicMaterial({color:0xfff1c7}));moon.position.set(-38,44,-60);scene.add(moon);for(let i=0;i<140;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.045+Math.random()*.045,8,6),new THREE.MeshBasicMaterial({color:0xffffff}));star.position.set((Math.random()-.5)*150,14+Math.random()*55,(Math.random()-.5)*150);scene.add(star)}}
+    function updateCamera(){camera.position.copy(player.position);camera.rotation.order='YXZ';camera.rotation.y=player.yaw;camera.rotation.x=player.pitch}
+    function blocked(x,z){if(Math.abs(x)>61||Math.abs(z)>61)return true;return colliders.some(c=>x+player.radius>c.minX&&x-player.radius<c.maxX&&z+player.radius>c.minZ&&z-player.radius<c.maxZ)}
+    function step(dt){move.set(0,0,0);const f=(keys.has('KeyW')||keys.has('ArrowUp')?1:0)-(keys.has('KeyS')||keys.has('ArrowDown')?1:0)+touchMove.y;const s=(keys.has('KeyD')||keys.has('ArrowRight')?1:0)-(keys.has('KeyA')||keys.has('ArrowLeft')?1:0)+touchMove.x;if(f||s){const sin=Math.sin(player.yaw),cos=Math.cos(player.yaw);move.x=sin*f+cos*s;move.z=cos*f-sin*s;move.normalize().multiplyScalar(player.speed*(keys.has('ShiftLeft')||keys.has('ShiftRight')?1.7:1)*dt);const nx=player.position.x+move.x,nz=player.position.z+move.z;if(!blocked(nx,player.position.z))player.position.x=nx;if(!blocked(player.position.x,nz))player.position.z=nz}updateCamera()}
+    function show(title,text){dialogueTitle.textContent=title;dialogueText.textContent=text;dialogue.classList.remove('hidden');clearTimeout(show.timer);show.timer=setTimeout(()=>dialogue.classList.add('hidden'),5200)}
+    function inspect(){let best=null,bd=Infinity;for(const item of interactables){const d=Math.hypot(item.x-player.position.x,item.z-player.position.z);if(d<bd&&d<7.5){best=item;bd=d}}best?show(best.title,best.text):show('Nothing Close','Walk closer to a lamp, balcony, archway, storefront, or fountain, then inspect again.')}
+    function animate(){step(Math.min(clock.getDelta(),.05));renderer.render(scene,camera);requestAnimationFrame(animate)}
 
-    function addLights() {
-      scene.add(new THREE.HemisphereLight(0xaab8ff, 0x120a06, 1.05));
-      const moon = new THREE.DirectionalLight(0xbfc9ff, 1.8);
-      moon.position.set(-22, 48, 20);
-      moon.castShadow = true;
-      moon.shadow.mapSize.set(1024, 1024);
-      moon.shadow.camera.near = 1;
-      moon.shadow.camera.far = 110;
-      moon.shadow.camera.left = -65;
-      moon.shadow.camera.right = 65;
-      moon.shadow.camera.top = 65;
-      moon.shadow.camera.bottom = -65;
-      scene.add(moon);
-    }
-
-    function addGround() {
-      const ground = new THREE.Mesh(new THREE.PlaneGeometry(130, 130), materials.street);
-      ground.rotation.x = -Math.PI / 2;
-      ground.receiveShadow = true;
-      scene.add(ground);
-
-      const grid = new THREE.GridHelper(130, 52, 0x9c8662, 0x322d36);
-      grid.position.y = 0.012;
-      scene.add(grid);
-
-      for (let i = -60; i <= 60; i += 10) {
-        const line = new THREE.Mesh(new THREE.BoxGeometry(126, 0.025, 0.08), materials.stone);
-        line.position.set(0, 0.025, i);
-        scene.add(line);
-        const cross = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.025, 126), materials.stone);
-        cross.position.set(i, 0.026, 0);
-        scene.add(cross);
-      }
-    }
-
-    function boxMesh(w, h, d, material) {
-      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      return mesh;
-    }
-
-    function collider(x, z, w, d) {
-      colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2 });
-    }
-
-    function addBuilding(x, z, w, d, h, material, name) {
-      const building = new THREE.Group();
-      const body = boxMesh(w, h, d, material);
-      body.position.y = h / 2;
-      building.add(body);
-
-      const roof = boxMesh(w + 0.5, 0.35, d + 0.5, materials.wood);
-      roof.position.y = h + 0.18;
-      building.add(roof);
-
-      const balconyLevels = Math.max(1, Math.floor(h / 3) - 1);
-      for (let level = 0; level < balconyLevels; level++) {
-        const y = 2.8 + level * 2.6;
-        const frontBalcony = boxMesh(Math.max(2, w * 0.72), 0.12, 0.75, materials.iron);
-        frontBalcony.position.set(0, y, d / 2 + 0.42);
-        building.add(frontBalcony);
-        const rail = boxMesh(Math.max(2, w * 0.72), 0.58, 0.08, materials.iron);
-        rail.position.set(0, y + 0.36, d / 2 + 0.78);
-        building.add(rail);
-
-        for (let wx = -w * 0.32; wx <= w * 0.32; wx += Math.max(2.2, w * 0.22)) {
-          const window = boxMesh(0.72, 1.15, 0.06, materials.lamp);
-          window.position.set(wx, y + 0.42, d / 2 + 0.035);
-          building.add(window);
-        }
-      }
-
-      building.position.set(x, 0, z);
-      scene.add(building);
-      collider(x, z, w + 0.9, d + 0.9);
-      interactables.push({ x, z, title: name, text: `${name}: pastel plaster, iron balcony rails, and a little old-world street wall doing New Orleans cosplay as a tiny European city.` });
-      return building;
-    }
-
-    function addLamp(x, z) {
-      const group = new THREE.Group();
-      const pole = boxMesh(0.12, 2.7, 0.12, materials.iron);
-      pole.position.y = 1.35;
-      group.add(pole);
-      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 12), materials.lamp);
-      bulb.position.y = 2.82;
-      group.add(bulb);
-      const glow = new THREE.PointLight(0xffbc6d, 1.9, 16, 1.8);
-      glow.position.y = 2.85;
-      group.add(glow);
-      group.position.set(x, 0, z);
-      scene.add(group);
-      interactables.push({ x, z, title: 'Gas Lamp', text: 'The lamp throws that soft amber Quarter glow onto the stones. This is the vibe-maker.' });
-    }
-
-    function addFountain() {
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(3.3, 3.8, 0.55, 48), materials.stone);
-      base.position.set(0, 0.28, 0);
-      base.castShadow = true;
-      base.receiveShadow = true;
-      scene.add(base);
-
-      const water = new THREE.Mesh(new THREE.CylinderGeometry(2.75, 2.75, 0.08, 48), materials.water);
-      water.position.set(0, 0.62, 0);
-      scene.add(water);
-
-      const column = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.6, 2.3, 24), materials.stone);
-      column.position.set(0, 1.72, 0);
-      column.castShadow = true;
-      scene.add(column);
-
-      const top = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 16), materials.lamp);
-      top.position.set(0, 3.05, 0);
-      scene.add(top);
-
-      const light = new THREE.PointLight(0x9fd8ff, 1.25, 12, 2);
-      light.position.set(0, 2.4, 0);
-      scene.add(light);
-      collider(0, 0, 7.5, 7.5);
-      interactables.push({ x: 0, z: 0, title: 'Moon Fountain', text: 'A quiet little courtyard fountain. Good central landmark: if you get turned around, come back here.' });
-    }
-
-    function addArch(x, z, rotation = 0) {
-      const group = new THREE.Group();
-      const left = boxMesh(0.8, 4.2, 0.9, materials.brick);
-      const right = boxMesh(0.8, 4.2, 0.9, materials.brick);
-      const top = boxMesh(5.2, 0.9, 0.9, materials.brick);
-      left.position.set(-2.2, 2.1, 0);
-      right.position.set(2.2, 2.1, 0);
-      top.position.set(0, 4.0, 0);
-      group.add(left, right, top);
-      group.rotation.y = rotation;
-      group.position.set(x, 0, z);
-      scene.add(group);
-      interactables.push({ x, z, title: 'Brick Archway', text: 'A narrow pass-through that gives this layout that older European quarter feel: compressed, crooked, and walkable.' });
-    }
-
-    function addSign(x, z, text) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 160;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#211515';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = '#f5bd62';
-      ctx.lineWidth = 10;
-      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-      ctx.fillStyle = '#ffe0a0';
-      ctx.font = 'bold 48px Trebuchet MS';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, 256, 80);
-      const texture = new THREE.CanvasTexture(canvas);
-      const sign = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 1.35), new THREE.MeshBasicMaterial({ map: texture }));
-      sign.position.set(x, 3.3, z);
-      sign.rotation.y = Math.PI;
-      scene.add(sign);
-      interactables.push({ x, z, title: text, text: `${text}: one more little storefront hiding in the Quarter maze.` });
-    }
-
-    function buildWorld() {
-      addLights();
-      addGround();
-
-      const blocks = [
-        [-22, -28, 12, 10, 8, materials.plaster1, 'Rue Violet House'],
-        [-7, -30, 10, 9, 7, materials.plaster3, 'Old Pensione'],
-        [12, -30, 13, 9, 9, materials.brick, 'Canal Brick Row'],
-        [30, -22, 10, 13, 8, materials.plaster2, 'Amber Corner'],
-        [31, -4, 9, 14, 7, materials.plaster3, 'Iron Lace Apartments'],
-        [31, 16, 10, 16, 9, materials.plaster1, 'Courtyard Hotel'],
-        [14, 32, 14, 10, 8, materials.brick, 'Old Market Wall'],
-        [-5, 32, 11, 10, 7, materials.plaster2, 'Blue Shutter House'],
-        [-25, 26, 13, 12, 8, materials.plaster3, 'Saint Alley Rooms'],
-        [-32, 5, 9, 15, 7, materials.plaster1, 'Quiet Arcade'],
-        [-31, -14, 10, 14, 8, materials.brick, 'Red Brick Court'],
-        [8, 12, 7, 9, 6, materials.plaster2, 'Tiny Cafe Block'],
-        [-11, 11, 8, 7, 6, materials.plaster1, 'Pocket Courtyard Rooms']
-      ];
-      blocks.forEach(args => addBuilding(...args));
-
-      addFountain();
-      addArch(-18, 2, Math.PI / 2);
-      addArch(20, -12, 0);
-      addArch(2, 22, 0);
-
-      [-26, -12, 0, 16, 30].forEach(z => addLamp(-12, z));
-      [-24, -6, 10, 27].forEach(z => addLamp(15, z));
-      [-18, 8, 24].forEach(x => addLamp(x, -18));
-      [-20, -4, 12, 26].forEach(x => addLamp(x, 18));
-
-      addSign(-7, -25.42, 'CAFE DU PIXEL');
-      addSign(14, -25.42, 'MOON BAR');
-      addSign(-5, 26.5, 'RUG SHOP');
-
-      const moon = new THREE.Mesh(new THREE.SphereGeometry(4.4, 32, 16), new THREE.MeshBasicMaterial({ color: 0xfff1c7 }));
-      moon.position.set(-38, 44, -60);
-      scene.add(moon);
-
-      for (let i = 0; i < 140; i++) {
-        const star = new THREE.Mesh(new THREE.SphereGeometry(0.045 + Math.random() * 0.045, 8, 6), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-        star.position.set((Math.random() - 0.5) * 150, 14 + Math.random() * 55, (Math.random() - 0.5) * 150);
-        scene.add(star);
-      }
-    }
-
-    function updateCamera() {
-      camera.position.copy(player.position);
-      camera.rotation.order = 'YXZ';
-      camera.rotation.y = player.yaw;
-      camera.rotation.x = player.pitch;
-    }
-
-    function wouldCollide(x, z) {
-      if (Math.abs(x) > 61 || Math.abs(z) > 61) return true;
-      return colliders.some(c => x + player.radius > c.minX && x - player.radius < c.maxX && z + player.radius > c.minZ && z - player.radius < c.maxZ);
-    }
-
-    function stepPlayer(dt) {
-      moveVector.set(0, 0, 0);
-      const forward = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0) + touchMove.y;
-      const strafe = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0) + touchMove.x;
-      if (forward || strafe) {
-        const sin = Math.sin(player.yaw);
-        const cos = Math.cos(player.yaw);
-        moveVector.x = sin * forward + cos * strafe;
-        moveVector.z = cos * forward - sin * strafe;
-        moveVector.normalize();
-        const sprint = keys.has('ShiftLeft') || keys.has('ShiftRight') ? 1.7 : 1;
-        moveVector.multiplyScalar(player.speed * sprint * dt);
-        const nextX = player.position.x + moveVector.x;
-        const nextZ = player.position.z + moveVector.z;
-        if (!wouldCollide(nextX, player.position.z)) player.position.x = nextX;
-        if (!wouldCollide(player.position.x, nextZ)) player.position.z = nextZ;
-      }
-      updateCamera();
-    }
-
-    function inspect() {
-      let best = null;
-      let bestDist = Infinity;
-      for (const item of interactables) {
-        const dx = item.x - player.position.x;
-        const dz = item.z - player.position.z;
-        const dist = Math.hypot(dx, dz);
-        if (dist < bestDist && dist < 7.5) {
-          best = item;
-          bestDist = dist;
-        }
-      }
-      if (!best) {
-        showDialogue('Nothing Close', 'Walk closer to a lamp, balcony, archway, storefront, or fountain, then inspect again.');
-        return;
-      }
-      showDialogue(best.title, best.text);
-    }
-
-    function showDialogue(title, text) {
-      dialogueTitle.textContent = title;
-      dialogueText.textContent = text;
-      dialogue.classList.remove('hidden');
-      clearTimeout(showDialogue.timer);
-      showDialogue.timer = setTimeout(() => dialogue.classList.add('hidden'), 5200);
-    }
-
-    function animate() {
-      const dt = Math.min(clock.getDelta(), 0.05);
-      stepPlayer(dt);
-      tempVector.set(Math.sin(performance.now() * 0.001) * 0.01, 0, 0);
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    }
-
-    function enterWorld() {
-      bootPanel.classList.add('hidden');
-      canvas.focus();
-      if (!matchMedia('(pointer: coarse)').matches) canvas.requestPointerLock?.();
-    }
-
-    enterButton.addEventListener('click', enterWorld);
-    canvas.addEventListener('click', () => { if (bootPanel.classList.contains('hidden')) canvas.requestPointerLock?.(); });
-    document.addEventListener('keydown', event => {
-      keys.add(event.code);
-      if (event.code === 'KeyE') inspect();
-      if (event.code === 'Escape') dialogue.classList.add('hidden');
-    });
-    document.addEventListener('keyup', event => keys.delete(event.code));
-    document.addEventListener('mousemove', event => {
-      if (document.pointerLockElement !== canvas) return;
-      player.yaw -= event.movementX * 0.0023;
-      player.pitch -= event.movementY * 0.0023;
-      player.pitch = Math.max(-1.25, Math.min(1.25, player.pitch));
-    });
-
-    fullscreenButton.addEventListener('click', () => document.documentElement.requestFullscreen?.());
-    resetButton.addEventListener('click', () => {
-      player.position.set(0, 1.7, 25);
-      player.yaw = Math.PI;
-      player.pitch = 0;
-      showDialogue('Reset', 'Back at the entrance. Start the night walk again.');
-    });
-    qualityButton.addEventListener('click', () => {
-      highQuality = !highQuality;
-      renderer.setPixelRatio(highQuality ? Math.min(devicePixelRatio, 1.8) : 1);
-      renderer.shadowMap.enabled = highQuality;
-      qualityButton.textContent = highQuality ? 'Quality: High' : 'Quality: Low';
-    });
-
-    touchAction.addEventListener('click', inspect);
-    touchStick.addEventListener('pointerdown', event => {
-      touchStick.setPointerCapture(event.pointerId);
-      updateStick(event);
-    });
-    touchStick.addEventListener('pointermove', updateStick);
-    touchStick.addEventListener('pointerup', clearStick);
-    touchStick.addEventListener('pointercancel', clearStick);
-
-    function updateStick(event) {
-      const rect = touchStick.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = Math.max(-42, Math.min(42, event.clientX - cx));
-      const dy = Math.max(-42, Math.min(42, event.clientY - cy));
-      stickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-      touchMove.x = dx / 42;
-      touchMove.y = -dy / 42;
-    }
-
-    function clearStick() {
-      touchMove.x = 0;
-      touchMove.y = 0;
-      stickKnob.style.transform = 'translate(0, 0)';
-    }
-
-    lookPad.addEventListener('pointerdown', event => {
-      lookPad.setPointerCapture(event.pointerId);
-      lastLook = { x: event.clientX, y: event.clientY };
-    });
-    lookPad.addEventListener('pointermove', event => {
-      if (!lastLook) return;
-      const dx = event.clientX - lastLook.x;
-      const dy = event.clientY - lastLook.y;
-      lastLook = { x: event.clientX, y: event.clientY };
-      player.yaw -= dx * 0.006;
-      player.pitch -= dy * 0.006;
-      player.pitch = Math.max(-1.25, Math.min(1.25, player.pitch));
-    });
-    lookPad.addEventListener('pointerup', () => lastLook = null);
-    lookPad.addEventListener('pointercancel', () => lastLook = null);
-
-    addEventListener('resize', () => {
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
-    });
-
-    buildWorld();
-    updateCamera();
-    animate();
+    document.getElementById('enter-world').addEventListener('click',()=>{bootPanel.classList.add('hidden');canvas.focus();if(!matchMedia('(pointer: coarse)').matches)canvas.requestPointerLock?.()});
+    canvas.addEventListener('click',()=>{if(bootPanel.classList.contains('hidden'))canvas.requestPointerLock?.()});
+    document.addEventListener('keydown',e=>{keys.add(e.code);if(e.code==='KeyE')inspect();if(e.code==='Escape')dialogue.classList.add('hidden')});
+    document.addEventListener('keyup',e=>keys.delete(e.code));
+    document.addEventListener('mousemove',e=>{if(document.pointerLockElement!==canvas)return;player.yaw-=e.movementX*.0023;player.pitch=Math.max(-1.25,Math.min(1.25,player.pitch-e.movementY*.0023))});
+    document.getElementById('fullscreen').addEventListener('click',()=>document.documentElement.requestFullscreen?.());
+    document.getElementById('reset').addEventListener('click',()=>{player.position.set(0,1.7,25);player.yaw=Math.PI;player.pitch=0;show('Reset','Back at the entrance. Start the night walk again.')});
+    document.getElementById('quality').addEventListener('click',e=>{highQuality=!highQuality;renderer.setPixelRatio(highQuality?Math.min(devicePixelRatio,1.8):1);renderer.shadowMap.enabled=highQuality;e.target.textContent=highQuality?'Quality: High':'Quality: Low'});
+    document.getElementById('touch-action').addEventListener('click',inspect);
+    function moveStick(e){const r=touchStick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,dx=Math.max(-42,Math.min(42,e.clientX-cx)),dy=Math.max(-42,Math.min(42,e.clientY-cy));stickKnob.style.transform=`translate(${dx}px,${dy}px)`;touchMove.x=dx/42;touchMove.y=-dy/42}function clearStick(){touchMove.x=0;touchMove.y=0;stickKnob.style.transform='translate(0,0)'}
+    touchStick.addEventListener('pointerdown',e=>{touchStick.setPointerCapture(e.pointerId);moveStick(e)});touchStick.addEventListener('pointermove',moveStick);touchStick.addEventListener('pointerup',clearStick);touchStick.addEventListener('pointercancel',clearStick);
+    lookPad.addEventListener('pointerdown',e=>{lookPad.setPointerCapture(e.pointerId);lastLook={x:e.clientX,y:e.clientY}});lookPad.addEventListener('pointermove',e=>{if(!lastLook)return;const dx=e.clientX-lastLook.x,dy=e.clientY-lastLook.y;lastLook={x:e.clientX,y:e.clientY};player.yaw-=dx*.006;player.pitch=Math.max(-1.25,Math.min(1.25,player.pitch-dy*.006))});lookPad.addEventListener('pointerup',()=>lastLook=null);lookPad.addEventListener('pointercancel',()=>lastLook=null);
+    addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+    buildWorld();updateCamera();animate();
   </script>
 </body>
 </html>
